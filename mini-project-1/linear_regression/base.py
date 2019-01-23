@@ -7,10 +7,7 @@ class LinearRegression(object):
 
     @staticmethod
     def add_bs(x):
-        bs_ft = np.ones((x.shape[0], 1))
-        x_bs = np.concatenate((bs_ft, x), axis=1)
-
-        return x_bs
+        return np.concatenate((np.ones((x.shape[0], 1)), x), axis=1)
 
     def fit(self, x, y):
         raise NotImplementedError
@@ -18,7 +15,4 @@ class LinearRegression(object):
     def predict(self, x):
         assert self._w is not None
 
-        x_bs = self.add_bs(x)
-        y_prd = x_bs.dot(self._w)
-
-        return y_prd
+        return self.add_bs(x).dot(self._w)

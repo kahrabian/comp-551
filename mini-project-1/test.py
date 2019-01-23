@@ -22,7 +22,7 @@ def closed_form_lr(ds):
 def gradient_descent_lr(ds):
     from linear_regression.gradient_descent import GradientDescentLinearRegression
 
-    lr = GradientDescentLinearRegression(beta=1e-6, nu=5e-9, eps=1e-7)
+    lr = GradientDescentLinearRegression(beta=1e-6, nu=5e-9, eps=1e-6)
     lr.fit(ds.data, ds.target)
 
     return lr.predict(ds.data)

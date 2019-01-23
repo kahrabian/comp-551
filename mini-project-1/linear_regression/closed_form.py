@@ -12,12 +12,4 @@ class ClosedFormLinearRegression(LinearRegression):
 
         x_bs = self.add_bs(x)
         x_bs_tr = x_bs.transpose()
-
-        w = x_bs_tr.dot(x_bs)
-        w = np.linalg.inv(w)
-        w = w.dot(x_bs_tr)
-        w = w.dot(y)
-
-        self._w = w.copy()
-
-        print(self._w)
+        self._w = np.linalg.inv(x_bs_tr.dot(x_bs)).dot(x_bs_tr).dot(y)
