@@ -1,5 +1,6 @@
 import json
 
+import numpy as np
 import pandas as pd
 
 
@@ -30,5 +31,7 @@ def frequent_words_dataset(wc, cnt):
 def uncouple_dataset(ds):
     ds_pd = pd.DataFrame.from_dict(ds)
     x = ds_pd.drop('popularity_score', axis=1)
+    x['controversiality'] = x['controversiality'].astype(np.int64)
+    x['is_root'] = x['is_root'].astype(np.int64)
     y = ds_pd.get('popularity_score')
     return x, y
