@@ -32,4 +32,4 @@ def uncouple_dataset(ds):
     ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
     y = ds_pd.pop('popularity_score')
     x = ds_pd.drop(['text', 'text_pp'], axis=1)
-    return x.values, y.values
+    return x, y

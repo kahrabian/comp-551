@@ -16,15 +16,15 @@ def test_linear_regression_closed_from(x_tr, y_tr, x_cv, y_cv):
     from linear_regression.closed_form import ClosedFormLinearRegression
 
     lr_cf = ClosedFormLinearRegression()
-    lr_cf.fit(x_tr, y_tr)
-    y_prd = lr_cf.predict(x_cv)
+    lr_cf.fit(x_tr.values, y_tr.values)
+    y_prd = lr_cf.predict(x_cv.values)
 
-    mse = metrics.regression.mean_squared_error(y_prd, y_cv)
-    print(mse)
+    mse = metrics.regression.mean_squared_error(y_prd, y_cv.values)
+    print('The Mean Squared Error is: {mse}'.format(mse=mse))
 
 
 def main():
-    # setup_logger()
+    setup_logger()
 
     ds = load_dataset()
     ds_pp = preprocess(ds)
@@ -39,7 +39,7 @@ def main():
     x_cv, y_cv = uncouple_dataset(cv_fr)
     # x_ts, y_ts = uncouple_dataset(ts_fr)
 
-    test_linear_regression_closed_from(x_tr[:, :3], y_tr, x_cv[:, :3], y_cv)
+    test_linear_regression_closed_from(x_tr, y_tr, x_cv, y_cv)
 
 
 if __name__ == '__main__':
