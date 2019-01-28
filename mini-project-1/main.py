@@ -12,14 +12,18 @@ def setup_logger():
     logging.basicConfig(filename=datetime.now().strftime('./logs/%Y-%m-%d-%H-%M-%S.log'), level=logging.INFO)
 
 
-def test_linear_regression_closed_from(x_tr, y_tr, x_cv, y_cv):
+def mean_squared_error(y, y_prd):
+    return metrics.regression.mean_squared_error(y_prd, y.values)
+
+
+def closed_from_lr(x_tr, y_tr, x_cv, y_cv):
     from linear_regression.closed_form import ClosedFormLinearRegression
 
     lr_cf = ClosedFormLinearRegression()
     lr_cf.fit(x_tr.values, y_tr.values)
-    y_prd = lr_cf.predict(x_cv.values)
+    y_prd = lr_cf.predict(x_cv)
 
-    mse = metrics.regression.mean_squared_error(y_prd, y_cv.values)
+    mse = mean_squared_error(y_cv, y_prd)
     print('The Mean Squared Error is: {mse}'.format(mse=mse))
 
 
@@ -39,7 +43,7 @@ def main():
     x_cv, y_cv = uncouple_dataset(cv_fr)
     # x_ts, y_ts = uncouple_dataset(ts_fr)
 
-    test_linear_regression_closed_from(x_tr, y_tr, x_cv, y_cv)
+    closed_from_lr(x_tr, y_tr, x_cv, y_cv)
 
 
 if __name__ == '__main__':

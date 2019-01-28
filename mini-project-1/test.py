@@ -6,8 +6,9 @@ def sklearn_lr(ds):
 
     lr = LinearRegression()
     lr.fit(ds.data, ds.target)
+    y_prd = lr.predict(ds.data)
 
-    return lr.predict(ds.data)
+    return y_prd
 
 
 def closed_form_lr(ds):
@@ -15,8 +16,9 @@ def closed_form_lr(ds):
 
     lr = ClosedFormLinearRegression()
     lr.fit(ds.data, ds.target)
+    y_prd = lr.predict(ds.data)
 
-    return lr.predict(ds.data)
+    return y_prd
 
 
 def gradient_descent_lr(ds):
@@ -24,8 +26,9 @@ def gradient_descent_lr(ds):
 
     lr = GradientDescentLinearRegression(beta=1e-6, nu=5e-9, eps=1e-6)
     lr.fit(ds.data, ds.target)
+    y_prd = lr.predict(ds.data)
 
-    return lr.predict(ds.data)
+    return y_prd
 
 
 def test():
