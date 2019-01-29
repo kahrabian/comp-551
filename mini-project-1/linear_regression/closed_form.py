@@ -1,5 +1,6 @@
 import numpy as np
 
+from data.helpers import timeit
 from .base import LinearRegression
 
 
@@ -7,6 +8,7 @@ class ClosedFormLinearRegression(LinearRegression):
     def __init__(self):
         super().__init__()
 
+    @timeit
     def fit(self, x, y):
         assert self._w is None
 

@@ -1,6 +1,11 @@
+import logging
+
 import numpy as np
 
+from data.helpers import calculate_mse, timeit
 from .base import LinearRegression
+
+logger = logging.getLogger(__name__)
 
 
 class GradientDescentLinearRegression(LinearRegression):
@@ -17,6 +22,7 @@ class GradientDescentLinearRegression(LinearRegression):
 
         return abs(err - _err)
 
+    @timeit
     def fit(self, x, y):
         assert self._w is None
 
@@ -26,6 +32,7 @@ class GradientDescentLinearRegression(LinearRegression):
         beta = 1
         self._w = np.random.uniform(0, 1, size=(x_bs.shape[1],))
 
+        epoch = 1
         while True:
             beta *= 1 + self._beta
             alpha = self._nu / beta
@@ -34,5 +41,11 @@ class GradientDescentLinearRegression(LinearRegression):
             eps = self.calculate_eps(x, y, w)
             self._w = w.copy()
 
+            y_prd = self.predict(x)
+            mse = calculate_mse(y, y_prd)
+            logger.info('[GD] E: {epoch}, MSE: {mse}'.format(epoch=epoch, mse=mse))
+
             if eps <= self._eps:
                 break
+
+            epoch += 1
