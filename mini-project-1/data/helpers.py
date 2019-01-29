@@ -49,7 +49,7 @@ def word_count_dataset(ds):
 
 
 def frequent_words_dataset(wc, cnt):
-    wc_sr = sorted(filter(lambda x: x[0] != '', wc.items()), key=lambda x: -x[1])
+    wc_sr = sorted(wc.items(), key=lambda x: -x[1])
     wc_sr_ks = list(map(lambda x: x[0], wc_sr[:cnt]))
     return wc_sr_ks
 

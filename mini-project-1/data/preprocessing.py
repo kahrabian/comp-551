@@ -18,9 +18,10 @@ def tokenize(ds):
 def word_count(ds):
     ds_wc = deepcopy(ds)
     for d in ds_wc:
-        d['wc'] = {}
+        wc = {}
         for w in d['text_pp']:
-            d['wc'][w] = d['wc'].get(w, 0) + 1
+            wc[w] = wc.get(w, 0) + 1
+        d['wc'] = wc
     return ds_wc
 
 
