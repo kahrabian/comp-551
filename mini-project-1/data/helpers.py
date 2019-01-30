@@ -23,7 +23,7 @@ def timeit(fn):
             fn_name = 'GD'
         else:
             fn_name = 'SK'
-        logger.info('[{fn_name}] T: {time}s'.format(fn_name=fn_name, time=end - start))
+        logger.info('[{fn_name}] T: {time}'.format(fn_name=fn_name, time=end - start))
 
         return result
 
@@ -40,24 +40,35 @@ def split_dataset(ds):
     return ds[:10000], ds[10000:11000], ds[11000:12000]
 
 
-def word_count_dataset(ds):
-    wc = {}
+def term_frequency_dataset(ds):
+    tf = {}
     for d in ds:
         for w in d['text_pp']:
-            wc[w] = wc.get(w, 0) + 1
-    return wc
+            tf[w] = tf.get(w, 0) + 1
+    return tf
 
 
-def frequent_words_dataset(wc, cnt):
-    wc_sr = sorted(wc.items(), key=lambda x: -x[1])
-    wc_sr_ks = list(map(lambda x: x[0], wc_sr[:cnt]))
-    return wc_sr_ks
+def document_frequency_dataset(ds):
+    df = {}
+    for i, d in enumerate(ds):
+        for w in d['text_pp']:
+            if w not in df:
+                df[w] = set()
+            df[w].add(i)
+    df = {k: len(v) for k, v in df.items()}
+    return df
+
+
+def most_frequent_words_dataset(tf, cnt):
+    tf_sr = sorted(tf.items(), key=lambda x: -x[1])
+    tf_sr_ks = list(map(lambda x: x[0], tf_sr[:cnt]))
+    return tf_sr_ks
 
 
 def uncouple_dataset(ds):
     ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
     y = ds_pd.pop('popularity_score')
-    x = ds_pd.drop(['text', 'text_pp'], axis=1)
+    x = ds_pd.drop(['text', 'text_pp', 'tf', 'tf_idf'], axis=1)
     return x, y
 
 

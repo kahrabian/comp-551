@@ -1,9 +1,10 @@
 import logging
 from datetime import datetime
 
-from data.feature_extraction import extract_frequent_words
-from data.helpers import load_dataset, split_dataset, word_count_dataset, frequent_words_dataset, uncouple_dataset, \
-    calculate_mse, timeit
+from data.feature_extraction import frequent_words, interaction_term, min_max_normalization, log_transformation, \
+    word_count, char_count, calculate_tf_idf
+from data.helpers import load_dataset, split_dataset, term_frequency_dataset, most_frequent_words_dataset, timeit, \
+    uncouple_dataset, calculate_mse, document_frequency_dataset
 from data.preprocessing import preprocess
 
 logger = logging.getLogger(__name__)
@@ -59,14 +60,22 @@ def main():
     ds_pp = preprocess(ds)
     tr, cv, ts = split_dataset(ds_pp)
 
-    wc = word_count_dataset(tr)
-    wc_fr = frequent_words_dataset(wc, 160)
+    tf = term_frequency_dataset(tr)
+    df = document_frequency_dataset(tr)
 
-    tr_fr, cv_fr, ts_fr = list(map(lambda x: extract_frequent_words(x, wc_fr), (tr, cv, ts)))
+    fw = most_frequent_words_dataset(tf, 160)
 
-    x_tr, y_tr = uncouple_dataset(tr_fr)
-    x_cv, y_cv = uncouple_dataset(cv_fr)
-    # x_ts, y_ts = uncouple_dataset(ts_fr)
+    tr, cv, ts = list(map(lambda x: frequent_words(x, fw), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: interaction_term(x, 'is_root', 'controversiality'), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: min_max_normalization(x, 'children'), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: log_transformation(x, 'children'), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: word_count(x), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: char_count(x), (tr, cv, ts)))
+    tr, cv, ts = list(map(lambda x: calculate_tf_idf(x, df), (tr, cv, ts)))
+
+    x_tr, y_tr = uncouple_dataset(tr)
+    x_cv, y_cv = uncouple_dataset(cv)
+    # x_ts, y_ts = uncouple_dataset(ts)
 
     sklearn_lr(x_tr, y_tr, x_cv, y_cv)
     closed_from_lr(x_tr, y_tr, x_cv, y_cv)
