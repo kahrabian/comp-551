@@ -1,11 +1,15 @@
 import logging
+from copy import deepcopy
 from datetime import datetime
 
+import numpy as np
+import pandas as pd
+
+from data import preprocessing
 from data.feature_extraction import frequent_words, interaction_term, min_max_normalization, log_transformation, \
     word_count, char_count, calculate_tf_idf
 from data.helpers import load_dataset, split_dataset, term_frequency_dataset, most_frequent_words_dataset, timeit, \
-    uncouple_dataset, calculate_mse, document_frequency_dataset
-from data.preprocessing import preprocess
+    calculate_mse, document_frequency_dataset
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +57,39 @@ def gradient_descent_lr(x_tr, y_tr, x_cv, y_cv):
     logger.info('[GD] CV MSE: {mse}'.format(mse=mse))
 
 
+def preprocess(ds):
+    ds_pp = deepcopy(ds)
+    for d in ds_pp:
+        d['text_pp'] = deepcopy(d['text'])
+    ds_pp = preprocessing.lowercase(ds_pp)
+    ds_pp = preprocessing.tokenize(ds_pp)
+    ds_pp = preprocessing.strip_punctuation(ds_pp)
+    ds_pp = preprocessing.remove_stopwords(ds_pp)
+    ds_pp = preprocessing.stem(ds_pp)
+    ds_pp = preprocessing.lemmatize(ds_pp)
+    ds_pp = preprocessing.term_frequency(ds_pp)
+    return ds_pp
+
+
+def extract_features(ds, df, fw):
+    ds_ef = deepcopy(ds)
+    ds_ef = frequent_words(ds_ef, fw)
+    ds_ef = interaction_term(ds_ef, 'is_root', 'controversiality')
+    ds_ef = min_max_normalization(ds_ef, 'children')
+    ds_ef = log_transformation(ds_ef, 'children')
+    ds_ef = word_count(ds_ef)
+    ds_ef = char_count(ds_ef)
+    ds_ef = calculate_tf_idf(ds_ef, df)
+    return ds_ef
+
+
+def prepare_dataset(ds):
+    ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
+    y = ds_pd.pop('popularity_score')
+    x = ds_pd.drop(['text', 'text_pp', 'tf', 'tf_idf'], axis=1)
+    return x, y
+
+
 def main():
     setup_logger()
 
@@ -62,20 +99,10 @@ def main():
 
     tf = term_frequency_dataset(tr)
     df = document_frequency_dataset(tr)
-
     fw = most_frequent_words_dataset(tf, 160)
 
-    tr, cv, ts = list(map(lambda x: frequent_words(x, fw), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: interaction_term(x, 'is_root', 'controversiality'), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: min_max_normalization(x, 'children'), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: log_transformation(x, 'children'), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: word_count(x), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: char_count(x), (tr, cv, ts)))
-    tr, cv, ts = list(map(lambda x: calculate_tf_idf(x, df), (tr, cv, ts)))
-
-    x_tr, y_tr = uncouple_dataset(tr)
-    x_cv, y_cv = uncouple_dataset(cv)
-    # x_ts, y_ts = uncouple_dataset(ts)
+    tr, cv, ts = list(map(lambda x: extract_features(x, df, fw), (tr, cv, ts)))
+    (x_tr, y_tr), (x_cv, y_cv), (_, _) = list(map(lambda x: prepare_dataset(x), (tr, cv, ts)))
 
     sklearn_lr(x_tr, y_tr, x_cv, y_cv)
     closed_from_lr(x_tr, y_tr, x_cv, y_cv)

@@ -3,8 +3,6 @@ import logging
 from functools import wraps
 from time import time
 
-import numpy as np
-import pandas as pd
 from sklearn import metrics
 
 logger = logging.getLogger(__name__)
@@ -63,13 +61,6 @@ def most_frequent_words_dataset(tf, cnt):
     tf_sr = sorted(tf.items(), key=lambda x: -x[1])
     tf_sr_ks = list(map(lambda x: x[0], tf_sr[:cnt]))
     return tf_sr_ks
-
-
-def uncouple_dataset(ds):
-    ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
-    y = ds_pd.pop('popularity_score')
-    x = ds_pd.drop(['text', 'text_pp', 'tf', 'tf_idf'], axis=1)
-    return x, y
 
 
 def calculate_mse(y, y_prd):

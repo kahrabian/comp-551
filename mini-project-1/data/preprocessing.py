@@ -65,17 +65,3 @@ def lemmatize(ds):
         for i, w in enumerate(d['text_pp']):
             d['text_pp'][i] = wl.lemmatize(w)
     return ds_ss
-
-
-def preprocess(ds):
-    ds_pp = deepcopy(ds)
-    for d in ds_pp:
-        d['text_pp'] = deepcopy(d['text'])
-    ds_pp = lowercase(ds_pp)
-    ds_pp = tokenize(ds_pp)
-    ds_pp = strip_punctuation(ds_pp)
-    ds_pp = remove_stopwords(ds_pp)
-    ds_pp = stem(ds_pp)
-    ds_pp = lemmatize(ds_pp)
-    ds_pp = term_frequency(ds_pp)
-    return ds_pp
