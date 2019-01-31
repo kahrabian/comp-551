@@ -27,10 +27,17 @@ def min_max_normalization(ds, fl):
     return ds_nr
 
 
-def log_transformation(ds, fl):
+def log_transformation(ds, fl, bs):
     ds_lg = deepcopy(ds)
     for d in ds_lg:
-        d[fl + '_log'] = 0 if d[fl] == 0 else math.log(d[fl])
+        d[fl + '_log_' + str(bs)] = 0 if d[fl] == 0 else math.log(d[fl], bs)
+    return ds_lg
+
+
+def power_transformation(ds, fl, pw):
+    ds_lg = deepcopy(ds)
+    for d in ds_lg:
+        d[fl + '_pw_' + str(pw)] = math.pow(d[fl], pw)
     return ds_lg
 
 
