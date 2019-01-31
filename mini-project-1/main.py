@@ -60,7 +60,7 @@ def preprocess(ds):
         d['text_pp'] = deepcopy(d['text'])
     ds_pp = preprocessing.lowercase(ds_pp)
     ds_pp = preprocessing.tokenize(ds_pp)
-    # ds_pp = preprocessing.strip_punctuation(ds_pp)
+    #ds_pp = preprocessing.strip_punctuation(ds_pp)
     # ds_pp = preprocessing.remove_stopwords(ds_pp)
     # ds_pp = preprocessing.stem(ds_pp)
     # ds_pp = preprocessing.lemmatize(ds_pp)
@@ -71,13 +71,15 @@ def preprocess(ds):
 def extract_features(ds, df, fw):
     ds_ef = deepcopy(ds)
     ds_ef = feature_extraction.frequent_words_tf(ds_ef, fw)
-    # ds_ef = feature_extraction.frequent_words_tf_idf(ds_ef, df, fw)
-    # ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'controversiality')
-    # ds_ef = feature_extraction.min_max_normalization(ds_ef, 'children')
-    ds_ef = feature_extraction.log_transformation(ds_ef, 'children', math.e)
-    ds_ef = feature_extraction.power_transformation(ds_ef, 'children', 2)
-    # ds_ef = feature_extraction.word_count(ds_ef)
-    # ds_ef = feature_extraction.char_count(ds_ef)
+    #ds_ef = feature_extraction.word_count(ds_ef)
+    #ds_ef = feature_extraction.char_count(ds_ef)
+    #ds_ef = feature_extraction.frequent_words_tf_idf(ds_ef, df, fw)
+  # ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'children')
+    ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'controversiality')
+   # ds_ef = feature_extraction.min_max_normalization(ds_ef, 'children')
+    ds_ef = feature_extraction.log_transformation(ds_ef,'children', math.e)
+    ds_ef = feature_extraction.power_transformation(ds_ef, 'children',1/2)
+    ds_ef = feature_extraction.inverse_transformation(ds_ef, 'children')
     return ds_ef
 
 
@@ -102,7 +104,7 @@ def main():
     tr, cv, ts = list(map(lambda x: extract_features(x, df, fw), (tr, cv, ts)))
     (x_tr, y_tr), (x_cv, y_cv), (_, _) = list(map(lambda x: prepare_dataset(x), (tr, cv, ts)))
 
-    sklearn_lr(x_tr, y_tr, x_cv, y_cv)
+    # sklearn_lr(x_tr, y_tr, x_cv, y_cv)
     closed_from_lr(x_tr, y_tr, x_cv, y_cv)
     # gradient_descent_lr(x_tr, y_tr, x_cv, y_cv)
 

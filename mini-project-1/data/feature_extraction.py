@@ -53,9 +53,15 @@ def power_transformation(ds, fl, pw):
     logger.info('[FE] power_transformation {fl} {pw}'.format(fl=fl, pw=pw))
     ds_lg = deepcopy(ds)
     for d in ds_lg:
-        d[fl + '_pw_' + str(pw)] = math.pow(d[fl], pw)
+        d[fl + '_pw_' + str(pw)] = math.pow(d[fl]+3/8, pw)
     return ds_lg
 
+def inverse_transformation(ds, fl):
+    logger.info('[FE] inverse_transformation {fl}'.format(fl=fl))
+    ds_lg = deepcopy(ds)
+    for d in ds_lg:
+        d[fl + '_inverse_'] =0 if d[fl] == 0 else (1/d[fl])
+    return ds_lg
 
 def word_count(ds):
     logger.info('[FE] word_count')
