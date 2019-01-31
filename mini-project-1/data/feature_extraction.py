@@ -50,6 +50,7 @@ def log_transformation(ds, fl, bs):
 
 
 def power_transformation(ds, fl, pw):
+    logger.info('[FE] power_transformation {fl} {pw}'.format(fl=fl, pw=pw))
     ds_lg = deepcopy(ds)
     for d in ds_lg:
         d[fl + '_pw_' + str(pw)] = math.pow(d[fl], pw)
