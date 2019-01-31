@@ -59,6 +59,9 @@ def document_frequency_dataset(ds):
 
 def most_frequent_words_dataset(tf, cnt):
     tf_sr = sorted(tf.items(), key=lambda x: -x[1])
+    with open('./logs/words.txt', 'w') as f:
+        for w, c in tf_sr[:cnt]:
+            f.write('{w},{c}\n'.format(w=w, c=c))
     tf_sr_ks = list(map(lambda x: x[0], tf_sr[:cnt]))
     return tf_sr_ks
 
