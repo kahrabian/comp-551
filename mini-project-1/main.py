@@ -86,7 +86,11 @@ def extract_features(ds, df, fw):
 def prepare_dataset(ds):
     ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
     y = ds_pd.pop('popularity_score')
-    x = ds_pd.drop(['text', 'text_pp', 'tf'], axis=1)
+    x = ds_pd.drop(['text', 'text_pp'], axis=1)
+    if 'tf' in x.keys():
+        x = x.drop('tf', axis=1)
+    if 'tf_idf' in x.keys():
+        x = x.drop('tf_idf', axis=1)
     return x, y
 
 
