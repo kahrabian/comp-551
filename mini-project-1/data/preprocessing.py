@@ -1,11 +1,15 @@
+import logging
 import string
 from copy import deepcopy
 
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
 
+logger = logging.getLogger(__name__)
+
 
 def lowercase(ds):
+    logger.info('[PP] lowercase')
     ds_lc = deepcopy(ds)
     for d in ds_lc:
         d['text_pp'] = d['text_pp'].lower()
@@ -13,6 +17,7 @@ def lowercase(ds):
 
 
 def tokenize(ds):
+    logger.info('[PP] tokenize')
     ds_tk = deepcopy(ds)
     for d in ds_tk:
         d['text_pp'] = d['text_pp'].split(' ')
@@ -20,6 +25,7 @@ def tokenize(ds):
 
 
 def term_frequency(ds):
+    logger.info('[PP] term_frequency')
     ds_tf = deepcopy(ds)
     for d in ds_tf:
         tf = {}
@@ -30,6 +36,7 @@ def term_frequency(ds):
 
 
 def strip_punctuation(ds):
+    logger.info('[PP] strip_punctuation')
     ds_sp = deepcopy(ds)
     ps = string.punctuation + '\n'
     for d in ds_sp:
@@ -40,6 +47,7 @@ def strip_punctuation(ds):
 
 
 def remove_stopwords(ds):
+    logger.info('[PP] remove_stopwords')
     ds_rs = deepcopy(ds)
     sw = stopwords.words('english')
     for i, w in enumerate(sw):
@@ -50,6 +58,7 @@ def remove_stopwords(ds):
 
 
 def stem(ds):
+    logger.info('[PP] stem')
     ds_ss = deepcopy(ds)
     ss = SnowballStemmer('english')
     for d in ds_ss:
@@ -59,6 +68,7 @@ def stem(ds):
 
 
 def lemmatize(ds):
+    logger.info('[PP] lemmatize')
     ds_ss = deepcopy(ds)
     wl = WordNetLemmatizer()
     for d in ds_ss:
