@@ -72,7 +72,7 @@ def extract_features(ds, df, fw):
     ds_ef = deepcopy(ds)
     ds_ef = feature_extraction.frequent_words_tf(ds_ef, fw)
     # ds_ef = feature_extraction.frequent_words_tf_idf(ds_ef, df, fw)
-    # ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'controversiality')
+    ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'controversiality')
     # ds_ef = feature_extraction.min_max_normalization(ds_ef, 'children')
     ds_ef = feature_extraction.log_transformation(ds_ef, 'children', math.e)
     ds_ef = feature_extraction.power_transformation(ds_ef, 'children', 2)
@@ -84,7 +84,11 @@ def extract_features(ds, df, fw):
 def prepare_dataset(ds):
     ds_pd = pd.DataFrame.from_dict(ds, dtype=np.float64)
     y = ds_pd.pop('popularity_score')
-    x = ds_pd.drop(['text', 'text_pp', 'tf'], axis=1)
+    x = ds_pd.drop(['text', 'text_pp'], axis=1)
+    if 'tf' in x.keys():
+        x = x.drop('tf', axis=1)
+    if 'tf_idf' in x.keys():
+        x = x.drop('tf_idf', axis=1)
     return x, y
 
 
@@ -104,7 +108,7 @@ def main():
 
     sklearn_lr(x_tr, y_tr, x_cv, y_cv)
     closed_from_lr(x_tr, y_tr, x_cv, y_cv)
-    # gradient_descent_lr(x_tr, y_tr, x_cv, y_cv)
+    gradient_descent_lr(x_tr, y_tr, x_cv, y_cv)
 
 
 if __name__ == '__main__':
