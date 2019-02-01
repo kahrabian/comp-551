@@ -73,7 +73,6 @@ def extract_features(ds, df, fw):
     # ds_ef = feature_extraction.word_count(ds_ef)
     # ds_ef = feature_extraction.char_count(ds_ef)
     # ds_ef = feature_extraction.frequent_words_tf_idf(ds_ef, df, fw)
-    # ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'children')
     ds_ef = feature_extraction.interaction_term(ds_ef, 'is_root', 'controversiality')
     # ds_ef = feature_extraction.min_max_normalization(ds_ef, 'children')
     ds_ef = feature_extraction.log_transformation(ds_ef, 'children', math.e)
