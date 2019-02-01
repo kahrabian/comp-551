@@ -48,9 +48,8 @@ def gradient_descent_lr(x_tr, y_tr, x_cv, y_cv):
 
     lr_cf = GradientDescentLinearRegression(beta=1e-6, nu=1e-6, eps=1e-7)
     lr_cf.fit(x_tr.values, y_tr.values)
-    y_prd = lr_cf.predict(x_cv)
 
-    mse = helpers.calculate_mse(y_cv.values, y_prd)
+    mse = helpers.calculate_mse(y_cv.values, lr_cf.predict(x_cv))
     logger.info('[GD] CV MSE: {mse}'.format(mse=mse))
 
 
