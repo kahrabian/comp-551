@@ -29,6 +29,9 @@ class GradientDescentLinearRegression(LinearRegression):
         x_bs = self.add_bs(x)
         x_bs_tr = x_bs.transpose()
 
+        x_bs_tr_y = x_bs_tr.dot(y)
+        x_bs_tr_bs = x_bs_tr.dot(x_bs)
+
         beta = 1
         self._w = np.random.uniform(0, 1, size=(x_bs.shape[1],))
 
@@ -37,15 +40,13 @@ class GradientDescentLinearRegression(LinearRegression):
             beta *= 1 + self._beta
             alpha = self._nu / beta
 
-            w = self._w - 2 * alpha * (x_bs_tr.dot(x_bs).dot(self._w) - x_bs_tr.dot(y))
-            eps = self.calculate_eps(x, y, w)
+            w = self._w - 2 * alpha * (x_bs_tr_bs.dot(self._w) - x_bs_tr_y)
             self._w = w.copy()
 
-            y_prd = self.predict(x)
-            mse = calculate_mse(y, y_prd)
+            mse = calculate_mse(y, self.predict(x))
             logger.info('[GD] E: {epoch}, MSE: {mse}'.format(epoch=epoch, mse=mse))
 
-            if eps <= self._eps:
+            if self.calculate_eps(x, y, w) <= self._eps:
                 break
 
             epoch += 1

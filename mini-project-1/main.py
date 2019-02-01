@@ -46,7 +46,7 @@ def closed_from_lr(x_tr, y_tr, x_cv, y_cv):
 def gradient_descent_lr(x_tr, y_tr, x_cv, y_cv):
     from linear_regression.gradient_descent import GradientDescentLinearRegression
 
-    lr_cf = GradientDescentLinearRegression(beta=1e-6, nu=1e-6, eps=1e-6)
+    lr_cf = GradientDescentLinearRegression(beta=1e-6, nu=1e-6, eps=1e-7)
     lr_cf.fit(x_tr.values, y_tr.values)
     y_prd = lr_cf.predict(x_cv)
 
@@ -110,7 +110,7 @@ def main():
 
     # sklearn_lr(x_tr, y_tr, x_cv, y_cv)
     closed_from_lr(x_tr, y_tr, x_cv, y_cv)
-    # gradient_descent_lr(x_tr, y_tr, x_cv, y_cv)
+    gradient_descent_lr(x_tr, y_tr, x_cv, y_cv)
 
 
 if __name__ == '__main__':
