@@ -41,12 +41,13 @@ class GradientDescentLinearRegression(LinearRegression):
             alpha = self._nu / beta
 
             w = self._w - 2 * alpha * (x_bs_tr_bs.dot(self._w) - x_bs_tr_y)
+            eps = self.calculate_eps(x, y, w)
             self._w = w.copy()
 
-            mse = calculate_mse(y, self.predict(x))
+            mse = calculate_mse(y, y_prd=self.predict(x))
             logger.info('[GD] E: {epoch}, MSE: {mse}'.format(epoch=epoch, mse=mse))
 
-            if self.calculate_eps(x, y, w) <= self._eps:
+            if eps <= self._eps:
                 break
 
             epoch += 1
