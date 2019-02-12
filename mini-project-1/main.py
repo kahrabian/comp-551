@@ -6,7 +6,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from data import helpers, preprocessing, feature_extraction
+from data import helpers, pre_processing, feature_extraction
 
 logger = logging.getLogger(__name__)
 
@@ -57,13 +57,13 @@ def preprocess(ds):
     ds_pp = deepcopy(ds)
     for d in ds_pp:
         d['text_pp'] = deepcopy(d['text'])
-    ds_pp = preprocessing.lowercase(ds_pp)
-    ds_pp = preprocessing.tokenize(ds_pp)
-    # ds_pp = preprocessing.strip_punctuation(ds_pp)
-    # ds_pp = preprocessing.remove_stopwords(ds_pp)
-    # ds_pp = preprocessing.stem(ds_pp)
-    # ds_pp = preprocessing.lemmatize(ds_pp)
-    ds_pp = preprocessing.term_frequency(ds_pp)
+    ds_pp = pre_processing.lowercase(ds_pp)
+    ds_pp = pre_processing.tokenize(ds_pp)
+    # ds_pp = pre_processing.strip_punctuation(ds_pp)
+    # ds_pp = pre_processing.remove_stopwords(ds_pp)
+    # ds_pp = pre_processing.stem(ds_pp)
+    # ds_pp = pre_processing.lemmatize(ds_pp)
+    ds_pp = pre_processing.term_frequency(ds_pp)
     return ds_pp
 
 
